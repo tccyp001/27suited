@@ -18,10 +18,16 @@ import React from "react";
 function Report() {
     React.useEffect(() => {
         console.log("aaa");
+        //get current month and year and set them to the select
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        setSelectedYear(String(year));
+        setSelectedMonth(String(month));
       });
   const [selectedYear, setSelectedYear] = React.useState("2023");
-  const [selectedMonth, setSelectedMonth] = React.useState("3");
-  const [selectedDate, setSelectedDate] = React.useState("3");
+  const [selectedMonth, setSelectedMonth] = React.useState("1");
+  const [selectedDate, setSelectedDate] = React.useState("");
   const [reportRows, setReportRows] = React.useState<any[]>([]);
   const [reportHeaderRow, setReportHeaderRow] = React.useState<any[]>([]);
   const [svgData, setSvgData] = React.useState("");
@@ -165,8 +171,8 @@ function Report() {
           <TableRow >
             <TableCell sx={{ fontWeight: 'bold', color:'gray' }} className="title-name" component="th" scope="row">Player</TableCell>
             <TableCell sx={{ fontWeight: 'bold', color:'gray' }} className="title-name" component="th" scope="row">Begin Balance</TableCell>
-            {reportHeaderRow.map((cell: any) => (<TableCell sx={{ fontWeight: 'bold', color:'gray' }}>{cell.ds}</TableCell>))}
             <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>End Balance</TableCell>
+            {reportHeaderRow.map((cell: any) => (<TableCell sx={{ fontWeight: 'bold', color:'gray' }}>{cell.ds}</TableCell>))}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -177,8 +183,9 @@ function Report() {
             >
                 <TableCell sx={{ fontWeight: 'bold'}}>{row.playerName}</TableCell>
                 <TableCell>{row.beginBalance}</TableCell>
+                <TableCell>${row.total/10}</TableCell>
                 {row.cells.map((cell: any) => (<TableCell>{cell.value}</TableCell>))}
-                <TableCell>{row.total}</TableCell>
+
             </TableRow>
           ))}
         </TableBody>
