@@ -11,3 +11,10 @@ change the baseUrl first. common.tsx
 ~/27suited/frontend$ npm start build
 
 copy build to outside
+
+
+Server:
+
+forever list
+forever stop 0
+forever start server.js

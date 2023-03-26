@@ -11,7 +11,6 @@ import Database from 'better-sqlite3';
 // import fs from 'fs';
 const app = express();
 app.use(express.json());
-
 function createTables(newdb) {
   newdb.exec(`
     create table balance_history (
@@ -163,7 +162,7 @@ app.use(cors({
 }));
 
 
-app.use(express.static(path.join(path.resolve(), '../build')));
+app.use(express.static(path.join(path.resolve(), '../frontend/build')));
 
 app.get('/getHistoryChart', (req, res) => {
   let db = openDb();
@@ -210,12 +209,11 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 
 app.get('/', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+  res.sendFile(path.join(process.cwd(), 'frontend/build/index.html'));
 });
 
 
 app.get('/history', (req,res) => {
- // readFromDb();
   let db = openDb();
   const balance = getBalanceInRange(db, req.query.startDt, req.query.endDt);
   res.send(JSON.stringify(balance));
