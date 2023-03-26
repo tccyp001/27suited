@@ -182,7 +182,7 @@ function Report() {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
                 <TableCell sx={{ fontWeight: 'bold'}}>{row.playerName}</TableCell>
-                <TableCell>{row.beginBalance}</TableCell>
+                <TableCell>${row.beginBalance/10}</TableCell>
                 <TableCell>${row.total/10}</TableCell>
                 {row.cells.map((cell: any) => (<TableCell>{cell.value}</TableCell>))}
 
