@@ -247,5 +247,5 @@ app.post('/updateBalance', (req,res) => {
   let db = openDb();
   manualUpdateBalance(db, req.body);
   db.close();
-  res.send("deleteDs done");
+  res.send("update balance done");
 });
