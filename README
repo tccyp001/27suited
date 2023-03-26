@@ -1,0 +1,13 @@
+1: start backend, following command:
+`~/27suited/node-backend$ node server.js`
+OR run and debug in vscode! (recommanded).
+
+2: start frontend: 
+npm start run 
+
+
+Build:
+change the baseUrl first. common.tsx
+~/27suited/frontend$ npm start build
+
+copy build to outside
