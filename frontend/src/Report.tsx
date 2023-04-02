@@ -122,7 +122,8 @@ function Report() {
     }
     url.search = new URLSearchParams(req).toString();
     //fetch(window.location.href+'history', {
-    fetch(url)
+    let urlStr = url.toString();
+    fetch(urlStr)
     .then(response => {
         return response.text();
     })
