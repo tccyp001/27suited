@@ -24,7 +24,7 @@ function Report() {
         const month = today.getMonth() + 1;
         setSelectedYear(String(year));
         setSelectedMonth(String(month));
-      });
+      }, []);
   const [selectedYear, setSelectedYear] = React.useState("2023");
   const [selectedMonth, setSelectedMonth] = React.useState("1");
   const [selectedDate, setSelectedDate] = React.useState("");
