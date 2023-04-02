@@ -103,8 +103,9 @@ function Report() {
     var url = new URL(baseUrl+'history')
 
     url.search = new URLSearchParams(req).toString();
-    //fetch(window.location.href+'history', {
-    fetch(url)
+    let urlStr = url.toString();
+    console.log("history url:" + urlStr);
+    fetch(urlStr)
     .then(response => {
         return response.text();
     })
