@@ -151,8 +151,8 @@ function openDb() {
   return new Database('./poker.db', { verbose: console.log });
 }
 
-app.listen(8000, () =>
-  console.log('Example app listening on port 8000!'),
+app.listen(80, () =>
+  console.log('Example app listening on port 80!'),
 );
 
 const upload = multer({ dest: 'uploads/' });
