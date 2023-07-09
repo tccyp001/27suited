@@ -21,6 +21,7 @@ export const playerList = [
   "JACK",
   "YP",
   "XIA",
+  "MIKE",
 ]
 
 const colorMap = {
@@ -40,6 +41,7 @@ const colorMap = {
   JACK: 13,
   YP: 10,
   XIA: 12,
+  MIKE: 15,
 };
 
 export function getIDColor(id) {
@@ -61,6 +63,8 @@ const aliasMap = {
   "YING L": "YING",
   "JIANG": "BING",
   "YS": "YONGSHENG",
+  "MIKE2": "MIKE",
+  "QC": "QICHENG",
 };
 
 export function normalizePlayer(s) {
