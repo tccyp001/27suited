@@ -151,7 +151,7 @@ function openDb() {
   return new Database('./poker.db', { verbose: console.log });
 }
 
-app.listen(80, () =>
+app.listen(8000, () =>
   console.log('Example app listening on port 80!'),
 );
 
@@ -225,12 +225,35 @@ app.get('/initDb', (req,res) => {
   res.send("initDb done");
 });
 
-app.get('/deleteDs', (req,res) => {
+app.get('/deleteDt', (req,res) => {
+  if (req.query.dt===null) {
+    res.send("deleteDt dt is null");
+    return;
+  }
   let db = openDb();
-  const stmt = db.prepare("DELETE FROM balance_history where game_date=?");
-  stmt.run(req.ds);
+  const stmt = db.prepare("DELETE FROM balance_history where julianday(game_date) - julianday(DATE(?)) <1 and julianday(game_date) - julianday(DATE(?)) >= 0");
+  stmt.run(req.query.dt, req.query.dt);
   db.close();
-  res.send("deleteDs done");
+  res.send("deleteDt done");
+});
+
+//update the balance to target "dt" in request
+app.get('/updateLastBalanceDt', (req,res) => {
+  if (req.query.dt===null) {
+    res.send("deleteDs dt is null");
+    return;
+  }
+  let db = openDb();
+  const stmt = db.prepare("SELECT game_date, player_name, current_game_chips, balance FROM balance_history where julianday(game_date) - julianday(DATE(?)) < 1 and julianday(game_date) - julianday(DATE(?)) >= 0");
+  const rows = stmt.all(req.query.dt, req.query.dt);
+
+  const updateStmt = db.prepare("REPLACE INTO  balance_history (player_name,game_date, current_game_chips, balance) values (?, -999, ?,?)");
+  rows.forEach(row => {
+    const info2 = updateStmt.run(row.player_name, row.current_game_chips, row.balance);
+    console.log(info2);});
+  //res.send(JSON.stringify(rows));
+  db.close();
+  res.send("updateLastBalanceDt done");
 });
 
 app.get('/deleteAll', (req,res) => {
