@@ -10,10 +10,11 @@ Build:
 change the baseUrl first. common.tsx
 ~/27suited/frontend$ npm run build
 
+don't forget to add missing files
 
 
 Server:
-
-forever list
-forever stop 0
-forever start server.js
+in backend folder
+sudo forever list
+sudo forever stop 0
+sudo forever start server.js
