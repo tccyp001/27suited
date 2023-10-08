@@ -8,9 +8,8 @@ npm start run
 
 Build:
 change the baseUrl first. common.tsx
-~/27suited/frontend$ npm start build
+~/27suited/frontend$ npm run build
 
-copy build to outside
 
 
 Server:
