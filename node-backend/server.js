@@ -11,7 +11,6 @@ import Database from 'better-sqlite3';
 // import fs from 'fs';
 const app = express();
 app.use(express.json());
-
 function createTables(newdb) {
   newdb.exec(`
     create table balance_history (
@@ -42,7 +41,7 @@ function getLastDs(db) {
 function compareMonth(ds, lastDs) {
   const d1 = new Date(ds);
   const d2 = new Date(lastDs);
-  return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
+  return d1.getUTCFullYear() === d2.getUTCFullYear() && d1.getUTCMonth() === d2.getUTCMonth();
 }
 
 function getLastBalance(db, lastGameDate) {
@@ -152,8 +151,8 @@ function openDb() {
   return new Database('./poker.db', { verbose: console.log });
 }
 
-app.listen(8000, () =>
-  console.log('Example app listening on port 8000!'),
+app.listen(80, () =>
+  console.log('Example app listening on port 80!'),
 );
 
 const upload = multer({ dest: 'uploads/' });
@@ -163,7 +162,7 @@ app.use(cors({
 }));
 
 
-app.use(express.static(path.join(path.resolve(), '../build')));
+app.use(express.static(path.join(path.resolve(), '../frontend/build')));
 
 app.get('/getHistoryChart', (req, res) => {
   let db = openDb();
@@ -210,12 +209,11 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 
 app.get('/', (req,res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+  res.sendFile(path.join(process.cwd(), 'frontend/build/index.html'));
 });
 
 
 app.get('/history', (req,res) => {
- // readFromDb();
   let db = openDb();
   const balance = getBalanceInRange(db, req.query.startDt, req.query.endDt);
   res.send(JSON.stringify(balance));
@@ -227,12 +225,35 @@ app.get('/initDb', (req,res) => {
   res.send("initDb done");
 });
 
-app.get('/deleteDs', (req,res) => {
+app.get('/deleteDt', (req,res) => {
+  if (req.query.dt===null) {
+    res.send("deleteDt dt is null");
+    return;
+  }
   let db = openDb();
-  const stmt = db.prepare("DELETE FROM balance_history where game_date=?");
-  stmt.run(req.ds);
+  const stmt = db.prepare("DELETE FROM balance_history where julianday(game_date) - julianday(DATE(?)) <1 and julianday(game_date) - julianday(DATE(?)) >= 0");
+  stmt.run(req.query.dt, req.query.dt);
   db.close();
-  res.send("deleteDs done");
+  res.send("deleteDt done");
+});
+
+//update the balance to target "dt" in request
+app.get('/updateLastBalanceDt', (req,res) => {
+  if (req.query.dt===null) {
+    res.send("deleteDs dt is null");
+    return;
+  }
+  let db = openDb();
+  const stmt = db.prepare("SELECT game_date, player_name, current_game_chips, balance FROM balance_history where julianday(game_date) - julianday(DATE(?)) < 1 and julianday(game_date) - julianday(DATE(?)) >= 0");
+  const rows = stmt.all(req.query.dt, req.query.dt);
+
+  const updateStmt = db.prepare("REPLACE INTO  balance_history (player_name,game_date, current_game_chips, balance) values (?, -999, ?,?)");
+  rows.forEach(row => {
+    const info2 = updateStmt.run(row.player_name, row.current_game_chips, row.balance);
+    console.log(info2);});
+  //res.send(JSON.stringify(rows));
+  db.close();
+  res.send("updateLastBalanceDt done");
 });
 
 app.get('/deleteAll', (req,res) => {
@@ -249,5 +270,5 @@ app.post('/updateBalance', (req,res) => {
   let db = openDb();
   manualUpdateBalance(db, req.body);
   db.close();
-  res.send("deleteDs done");
+  res.send("update balance done");
 });

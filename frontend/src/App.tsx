@@ -128,7 +128,7 @@ function App() {
         <Box sx={{ '& button': { m: 1 } }}>
           <input
             color="primary"
-            accept="csv/*"
+            accept=".csv"
             type="file"
             onChange={handleFileInputChange}
             id="icon-button-file"

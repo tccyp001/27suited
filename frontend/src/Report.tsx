@@ -18,10 +18,16 @@ import React from "react";
 function Report() {
     React.useEffect(() => {
         console.log("aaa");
-      });
+        //get current month and year and set them to the select
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        setSelectedYear(String(year));
+        setSelectedMonth(String(month));
+      }, []);
   const [selectedYear, setSelectedYear] = React.useState("2023");
-  const [selectedMonth, setSelectedMonth] = React.useState("3");
-  const [selectedDate, setSelectedDate] = React.useState("3");
+  const [selectedMonth, setSelectedMonth] = React.useState("1");
+  const [selectedDate, setSelectedDate] = React.useState("");
   const [reportRows, setReportRows] = React.useState<any[]>([]);
   const [reportHeaderRow, setReportHeaderRow] = React.useState<any[]>([]);
   const [svgData, setSvgData] = React.useState("");
@@ -63,7 +69,7 @@ function Report() {
         let valueObj = retObj[key];
         console.log(key, valueObj);
         let cellsArr: any[] = [];
-        let row = { cells: cellsArr, playerName : key, total: 0, beginBalance: -1 };
+        let row = { cells: cellsArr, playerName : key, total: 0, beginBalance: -1,  endBalanceBeforePayout:0, endBalanceAfterPayout:0, expectedPayout: 0};
         (Object.keys(valueObj) as (keyof typeof valueObj)[]).forEach((key2, index) => {
             let cellObj = { ds: String(key2).split('T')[0], value: valueObj[key2]['current_game_chips'] };
             row.cells.push(cellObj);
@@ -72,6 +78,14 @@ function Report() {
                 row.beginBalance = valueObj[key2]['balance'] - valueObj[key2]['current_game_chips'] ;
             }
         });
+        row.endBalanceBeforePayout = row.total;
+        if (row.endBalanceBeforePayout < -500 || row.endBalanceBeforePayout > 1000) {
+          row.endBalanceAfterPayout = 0;
+          row.expectedPayout = row.endBalanceBeforePayout;
+        } else {
+          row.endBalanceAfterPayout = row.endBalanceBeforePayout;
+          row.expectedPayout = 0;
+        }
         rowsArr.push(row);
     });
     setReportRows(rowsArr);
@@ -97,8 +111,9 @@ function Report() {
     var url = new URL(baseUrl+'history')
 
     url.search = new URLSearchParams(req).toString();
-    //fetch(window.location.href+'history', {
-    fetch(url)
+    let urlStr = url.toString();
+    console.log("history url:" + urlStr);
+    fetch(urlStr)
     .then(response => {
         return response.text();
     })
@@ -115,7 +130,8 @@ function Report() {
     }
     url.search = new URLSearchParams(req).toString();
     //fetch(window.location.href+'history', {
-    fetch(url)
+    let urlStr = url.toString();
+    fetch(urlStr)
     .then(response => {
         return response.text();
     })
@@ -165,8 +181,10 @@ function Report() {
           <TableRow >
             <TableCell sx={{ fontWeight: 'bold', color:'gray' }} className="title-name" component="th" scope="row">Player</TableCell>
             <TableCell sx={{ fontWeight: 'bold', color:'gray' }} className="title-name" component="th" scope="row">Begin Balance</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>End Balance Before Payout</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>End Balance After Payout</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>Expected Payout</TableCell>
             {reportHeaderRow.map((cell: any) => (<TableCell sx={{ fontWeight: 'bold', color:'gray' }}>{cell.ds}</TableCell>))}
-            <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>End Balance</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -176,9 +194,12 @@ function Report() {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
                 <TableCell sx={{ fontWeight: 'bold'}}>{row.playerName}</TableCell>
-                <TableCell>{row.beginBalance}</TableCell>
+                <TableCell>${Math.round(row.beginBalance/10)}</TableCell>
+                <TableCell>${Math.round(row.endBalanceBeforePayout/10)}</TableCell>
+                <TableCell>${Math.round(row.endBalanceAfterPayout/10)}</TableCell>
+                <TableCell>${Math.round(row.expectedPayout/10)}</TableCell>
                 {row.cells.map((cell: any) => (<TableCell>{cell.value}</TableCell>))}
-                <TableCell>{row.total}</TableCell>
+
             </TableRow>
           ))}
         </TableBody>
