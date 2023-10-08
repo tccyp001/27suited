@@ -8,7 +8,7 @@ npm start run
 
 Build:
 change the baseUrl first. common.tsx
-export const baseUrl = "http://3.16.155.160:8000/";
+export const baseUrl = "http://3.16.155.160/";
 
 ~/27suited/frontend$ npm run build
 
