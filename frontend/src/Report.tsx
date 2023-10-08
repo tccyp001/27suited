@@ -69,7 +69,7 @@ function Report() {
         let valueObj = retObj[key];
         console.log(key, valueObj);
         let cellsArr: any[] = [];
-        let row = { cells: cellsArr, playerName : key, total: 0, beginBalance: -1 };
+        let row = { cells: cellsArr, playerName : key, total: 0, beginBalance: -1,  endBalanceBeforePayout:0, endBalanceAfterPayout:0, expectedPayout: 0};
         (Object.keys(valueObj) as (keyof typeof valueObj)[]).forEach((key2, index) => {
             let cellObj = { ds: String(key2).split('T')[0], value: valueObj[key2]['current_game_chips'] };
             row.cells.push(cellObj);
@@ -78,6 +78,14 @@ function Report() {
                 row.beginBalance = valueObj[key2]['balance'] - valueObj[key2]['current_game_chips'] ;
             }
         });
+        row.endBalanceBeforePayout = row.total;
+        if (row.endBalanceBeforePayout < -500 || row.endBalanceBeforePayout > 1000) {
+          row.endBalanceAfterPayout = 0;
+          row.expectedPayout = row.endBalanceBeforePayout;
+        } else {
+          row.endBalanceAfterPayout = row.endBalanceBeforePayout;
+          row.expectedPayout = 0;
+        }
         rowsArr.push(row);
     });
     setReportRows(rowsArr);
@@ -173,7 +181,9 @@ function Report() {
           <TableRow >
             <TableCell sx={{ fontWeight: 'bold', color:'gray' }} className="title-name" component="th" scope="row">Player</TableCell>
             <TableCell sx={{ fontWeight: 'bold', color:'gray' }} className="title-name" component="th" scope="row">Begin Balance</TableCell>
-            <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>End Balance</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>End Balance Before Payout</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>End Balance After Payout</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', color:'gray' }}>Expected Payout</TableCell>
             {reportHeaderRow.map((cell: any) => (<TableCell sx={{ fontWeight: 'bold', color:'gray' }}>{cell.ds}</TableCell>))}
           </TableRow>
         </TableHead>
@@ -185,7 +195,9 @@ function Report() {
             >
                 <TableCell sx={{ fontWeight: 'bold'}}>{row.playerName}</TableCell>
                 <TableCell>${row.beginBalance/10}</TableCell>
-                <TableCell>${row.total/10}</TableCell>
+                <TableCell>${row.endBalanceBeforePayout/10}</TableCell>
+                <TableCell>${row.endBalanceAfterPayout/10}</TableCell>
+                <TableCell>${row.expectedPayout/10}</TableCell>
                 {row.cells.map((cell: any) => (<TableCell>{cell.value}</TableCell>))}
 
             </TableRow>

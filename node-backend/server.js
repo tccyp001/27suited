@@ -41,7 +41,7 @@ function getLastDs(db) {
 function compareMonth(ds, lastDs) {
   const d1 = new Date(ds);
   const d2 = new Date(lastDs);
-  return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
+  return d1.getUTCFullYear() === d2.getUTCFullYear() && d1.getUTCMonth() === d2.getUTCMonth();
 }
 
 function getLastBalance(db, lastGameDate) {
