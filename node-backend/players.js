@@ -22,6 +22,7 @@ export const playerList = [
   "YP",
   "XIA",
   "MIKE",
+  "FENG",
 ]
 
 const colorMap = {
@@ -42,6 +43,7 @@ const colorMap = {
   YP: 10,
   XIA: 12,
   MIKE: 15,
+  FENG: 17,
 };
 
 export function getIDColor(id) {
