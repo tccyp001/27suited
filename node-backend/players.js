@@ -3,7 +3,7 @@ const palette = [
   "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", // indigo, blue, lightBlue, cyan,
   "#009688", "#4caf50", "#8bc34a", "#cddc39", // teal, green, lightGreen, lime
   "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", // yellow, amber, orange, deepOrange
-  "#795548", "#9e9e9e", "#607d8b"]; // brown, grey, blueGrey
+  "#795548", "#9e9e9e", "#607d8b", "#c576f6"]; // brown, grey, blueGrey, lightPurple
 
 export const playerList = [
   "QICHENG",
@@ -23,6 +23,7 @@ export const playerList = [
   "XIA",
   "MIKE",
   "FENG",
+  "ZHOULI",
 ]
 
 const colorMap = {
@@ -44,6 +45,7 @@ const colorMap = {
   XIA: 12,
   MIKE: 15,
   FENG: 17,
+  ZHOULI: 19,
 };
 
 export function getIDColor(id) {
