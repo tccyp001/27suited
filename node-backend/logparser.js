@@ -155,7 +155,10 @@ function parseBlind(entry, state) {
     const player = normalizePlayer(m[1]);
     const blind = parseInt(m[4], 10);
     state.players[player].stack -= blind;
-    state.players[player].bet = blind;
+    if (m[2] !== " missing") {
+      // missing small blind is considered dead, still need put into the pot, but not bet
+      state.players[player].bet = blind;
+    }
     state.pot.push([player, blind]);
     return state;
   }
