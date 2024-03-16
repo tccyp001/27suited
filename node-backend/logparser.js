@@ -146,16 +146,17 @@ function parseUpdateStack(entry, state) {
 
 function parseBlind(entry, state) {
   const m = entry.match(/"([^"]+)" posts a( missing| missed)? (small|big) blind of (\d+)/);
+  // missing blind example
+  // """Foo @ zp91dddcv"" posts a missing small blind of 10",<datetime>
+  // """Bar @ A26rbbbFHH"" posts a big blind of 20",<datetime>
+  // """Foo @ zp91dddcv"" posts a small blind of 10",<datetime>
+  // so we need just treat missing one as normal one
   if (m) {
     const player = normalizePlayer(m[1]);
-    if (m[2] === " missing" && state.pot[0][0] === player) {
-      // do nothing when the player has already posted a small blind
-      return state;
-    }
     const blind = parseInt(m[4], 10);
     state.players[player].stack -= blind;
     if (m[2] !== " missing") {
-      // missing small blind is considered dead
+      // missing small blind is considered dead, still need put into the pot, but not bet
       state.players[player].bet = blind;
     }
     state.pot.push([player, blind]);

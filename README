@@ -2,6 +2,11 @@
 `~/27suited/node-backend$ node server.js`
 OR run and debug in vscode! (recommanded).
 
+change 
+```
+app.listen(80, () => ...
+to 8000
+```
 2: start frontend: 
 npm start run 
 
