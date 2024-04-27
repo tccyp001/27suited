@@ -315,6 +315,8 @@ function parseCollect(entry, state) {
         state.players[player].delta += take;
       }
     }
+    // if someone force to fold a hand, we still need reset the bet.
+    state.players[player].bet = 0;
     return state;
   }
 }
